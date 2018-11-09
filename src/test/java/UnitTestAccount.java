@@ -1,15 +1,15 @@
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
-public class UnitTestAccount {
-    Account account;
-
-    @BeforeEach
-    void init() {
-        account = new Account(100);
-    }
-
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
+//import static org.junit.jupiter.api.Assertions.*;
+//
+//public class UnitTestAccount {
+//    Account account;
+//
+//    @BeforeEach
+//    void init() {
+//        account = new Account(100);
+//    }
+//
 //    @Test
 //    void testDeposit() {
 //        account.deposit(500);
@@ -39,6 +39,6 @@ public class UnitTestAccount {
 //        account.withdraw(50);
 //        assertEquals(50,account.getExpenses());
 //    }
-
-
-}
+//
+//
+//}
