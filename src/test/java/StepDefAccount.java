@@ -1,43 +1,53 @@
-import cucumber.api.java.en.And;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StepDefAccount {
     Account account;
 
-    @Given("^a customer with initial balance (\\d+) exists$")
-    public void a_customer_with_initial_balance_exists(double money) throws Throwable {
-        account = new Account(money);
+    @Before
+    public void init() {
+        account = new Account(Main.nameAccount);
     }
 
-    @When("^I deposit (\\d+) to my account$")
-    public void i_deposit_to_my_account(double money) throws Throwable{
-        account.deposit(money);
+    @Given("^a user with balance (//d+) exists$")
+    void deposit_init(double amount) {
+        account.add(new Transaction(LocalDate.now(), amount, ""));
     }
 
-    @Then("^my account balance is (\\d+)$")
-    public void my_account_balance_is(double balance) throws Throwable {
-        assertEquals(balance,account.getBalance());
-    }
-    @And("^my account income is (\\d+)$")
-    public void my_account_income_is(double balance) throws Throwable {
-        assertEquals(balance,account.getIncome());
+    @When("^I deposit (//d+)$")
+    void deposit(double amount) {
+        account.add(new Transaction(LocalDate.now(), amount, ""));
     }
 
-    @When("^I withdraw (\\d+) from my account$")
-    public void I_withdraw_from_my_account(double money)throws Throwable{
-        account.withdraw(money);
-    }
-    @Then("^my account balance  is (\\d+)$")
-    public void my_account_balance_after_withdraw_is(double money)throws Throwable {
-        assertEquals(money,account.getBalance());
-    }
-    @And("^my account expense is (\\d+)$")
-    public void my_account_expense_is(double money) throws Throwable{
-        assertEquals(money,account.getExpenses());
+    @When("^I expense (//d+)$")
+    void expense(double amount) {
+        account.add(new Transaction(LocalDate.now(), - amount, ""));
     }
 
+    @Then("^my account have balance (//d+) exists$")
+    void balance(double amount) {
+        assertEquals(amount, account.getTotal());
+    }
+
+
+//    @Given("^a customer with balance (//d+) exists$")
+//    public void a_customer_deposit_amount(double amount) {
+//        account.deposit(amount);
+//    }
+//
+//    @When("^I deposit (//d+) to my account$")
+//    public void account_deposit(double amount) {
+//        account.deposit(amount);
+//    }
+//
+//    @Then("^my account balance is (d//+)$")
+//    public void new_balance_is(double amount) {
+//        assertEquals(amount, account.getBalance());
+//    }
 }
