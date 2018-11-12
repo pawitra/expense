@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -16,7 +17,44 @@ public class Account {
     public Account(String name, String filename) {
         this.name = name;
         transactions = new ArrayList<>();
-        if (filename.length() > 0) readFile(filename);
+        if (filename.contains(".txt")){
+            if (filename.length() > 0) readFile(filename);
+        }else if (filename.contains(".db")){
+            try {
+                Class.forName("org.sqlite.JDBC");
+                String dbURL = "jdbc:sqlite:historyOfExpenseDB.db";
+                Connection conn = DriverManager.getConnection(dbURL);
+
+                if (conn != null) {
+                    System.out.println("Connected to the database.");
+                    // display database information
+                    DatabaseMetaData dm = conn.getMetaData();
+                    System.out.println("Driver name: " + dm.getDriverName());
+                    System.out.println("Product name: " + dm.getDatabaseProductName());
+
+                    System.out.println("----- Data in Transactions table -----");
+
+                    String query = "select * from transactions";
+                    Statement statement = conn.createStatement();
+                    ResultSet resultSet = statement.executeQuery(query);
+
+                    while (resultSet.next()) {
+                        int id = resultSet.getInt(1);
+                        String date = resultSet.getString(2);
+                        double amount = resultSet.getDouble(3);
+                        String type = resultSet.getString(4);
+                        String detail = resultSet.getString(5);
+                        add(new Transaction(convertToDate(date),amount,detail));
+                        System.out.println("id:"+id+" date:"+date+" amount:"+amount+" type: "+type+" note: "+detail);
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public Account(String name) {
@@ -25,6 +63,7 @@ public class Account {
 
     public void add(Transaction transaction){
         transactions.add(transaction);
+        transaction.setId(transactions.indexOf(transaction)+1);
     }
 
 
@@ -75,7 +114,6 @@ public class Account {
         try (BufferedReader buffer = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = buffer.readLine()) != null) {
-                // "\\s" == any spaces
                 String[] splitLine = line.split("\\s+");
                 add(new Transaction(
                         convertToDate(splitLine[0]), Double.parseDouble(splitLine[1]), splitLine[2]

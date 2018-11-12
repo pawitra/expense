@@ -6,14 +6,14 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    public static final String filename = "historyOfExpense.txt";
+    public static String filename;
     public static final String nameAccount = "Pawitra";
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("firstPage.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("selectFile.fxml"));
         primaryStage.setTitle("My Expense");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root, 300, 300));
         primaryStage.setResizable(false);
         primaryStage.show();
     }

@@ -7,9 +7,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.sql.*;
 import java.time.LocalDate;
 
 public class FirstPageController {
+
 
     private static Account account = new Account(Main.nameAccount, Main.filename);
     private static Transaction selectedTransaction;
@@ -20,6 +22,8 @@ public class FirstPageController {
     protected Button addButton;
     @FXML
     protected Button editButton;
+    @FXML
+    protected Button backButton;
     @FXML
     protected TextField dateField;
     @FXML
@@ -56,7 +60,11 @@ public class FirstPageController {
         amountField.setText("");
         detailField.setText("");
         String content = currentTransaction.formatContent();
-        writeFile(content, Main.filename);
+        if (Main.filename.contains(".txt"))
+            writeFile(content, Main.filename);
+        if (Main.filename.contains(".db"))
+            writeDatabase(currentTransaction);
+
     }
 
     @FXML
@@ -67,6 +75,21 @@ public class FirstPageController {
         FXMLLoader loader=new FXMLLoader(getClass().getResource("edit.fxml"));
         try{
             stage.setScene(new Scene(loader.load(),800,600));
+            stage.setResizable(false);
+            stage.show();
+        }catch(IOException e1){
+            e1.printStackTrace();
+        }
+
+    }
+
+    @FXML
+    void back(ActionEvent event){
+        Button b=(Button)event.getSource();
+        Stage stage=(Stage)b.getScene().getWindow();
+        FXMLLoader loader=new FXMLLoader(getClass().getResource("selectFile.fxml"));
+        try{
+            stage.setScene(new Scene(loader.load(),300,300));
             stage.setResizable(false);
             stage.show();
         }catch(IOException e1){
@@ -109,5 +132,35 @@ public class FirstPageController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void writeDatabase(Transaction transaction){
+        try {
+            Class.forName("org.sqlite.JDBC");
+            String dbURL = "jdbc:sqlite:historyOfExpenseDB.db";
+            Connection conn = DriverManager.getConnection(dbURL);
+
+            if (conn != null) {
+                System.out.println("Connected to the database.");
+                // display database information
+                DatabaseMetaData dm = conn.getMetaData();
+                System.out.println("Driver name: " + dm.getDriverName());
+                System.out.println("Product name: " + dm.getDatabaseProductName());
+
+                System.out.println("----- Data in Transactions table -----");
+
+                String query = "insert into transactions values ("
+                        + transaction.getId() + ", \"" + String.valueOf(transaction.getDate()) + "\", " + transaction.getAmount()
+                        + ", \"" + transaction.getType() + "\", \"" + transaction.getDetail() + "\")";
+                Statement statement = conn.createStatement();
+                statement.executeQuery(query);
+
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }

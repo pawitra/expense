@@ -9,9 +9,11 @@ import javafx.stage.Stage;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.*;
 import java.time.LocalDate;
 
 public class EditController {
+
     Transaction selectedTransaction;
     Account account;
 
@@ -64,7 +66,11 @@ public class EditController {
         selectedTransaction.setDetail(detailField.getText());
 
         System.out.println(account.formatContent());
-        writeFile(account.formatContent(), Main.filename);
+        if (Main.filename.contains(".txt"))
+            writeFile(account.formatContent(), Main.filename);
+        if (Main.filename.contains(".db"))
+            writeDatabase(selectedTransaction);
+
         Button b=(Button)event.getSource();
         Stage stage=(Stage)b.getScene().getWindow();
         FXMLLoader loader=new FXMLLoader(getClass().getResource("firstPage.fxml"));
@@ -86,6 +92,36 @@ public class EditController {
             e.printStackTrace();
         }
     }
+    private void writeDatabase(Transaction transaction){
+        try {
+            Class.forName("org.sqlite.JDBC");
+            String dbURL = "jdbc:sqlite:historyOfExpenseDB.db";
+            Connection conn = DriverManager.getConnection(dbURL);
+
+            if (conn != null) {
+                System.out.println("Connected to the database.");
+                // display database information
+                DatabaseMetaData dm = conn.getMetaData();
+                System.out.println("Driver name: " + dm.getDriverName());
+                System.out.println("Product name: " + dm.getDatabaseProductName());
+
+                System.out.println("----- Data in Transactions table -----");
+
+                String query = "update transactions set date = \"" + String.valueOf(transaction.getDate())
+                        + "\", amount = " + transaction.getAmount() + ", type = \"" + transaction.getType() + "\", note = \""
+                        + transaction.getDetail() + "\" where id = " + transaction.getId();
+                Statement statement = conn.createStatement();
+                statement.executeQuery(query);
+
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
 

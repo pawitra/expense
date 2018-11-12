@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SelectFileController">
+    <children>
+        <Button fx:id="textButton" layoutX="14.0" layoutY="131.0" mnemonicParsing="false" onAction="#selectText" prefHeight="66.0" prefWidth="106.0" text="Text">
+         <font>
+            <Font size="18.0" />
+         </font></Button>
+        <Button fx:id="databaseButton" layoutX="180.0" layoutY="131.0" mnemonicParsing="false" onAction="#selectDatabase" prefHeight="66.0" prefWidth="106.0" text="Database">
+         <font>
+            <Font size="18.0" />
+         </font></Button>
+      <Label layoutX="107.0" layoutY="51.0" prefHeight="28.0" prefWidth="87.0" text="Select File">
+         <font>
+            <Font size="19.0" />
+         </font></Label>
+    </children>
+</AnchorPane>

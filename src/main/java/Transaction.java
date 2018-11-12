@@ -5,7 +5,7 @@ public class Transaction {
     private String type;
     private double amount;
     private String detail;
-    private int index;
+    private int id;
 
 
     public Transaction(LocalDate date, double amount, String detail) {
@@ -64,5 +64,11 @@ public class Transaction {
         this.detail = detail;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
+    public int getId() {
+        return id;
+    }
 }
