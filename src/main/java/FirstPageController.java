@@ -19,11 +19,19 @@ public class FirstPageController {
     @FXML
     protected Label nameLabel;
     @FXML
+    protected Label incomeLabel;
+    @FXML
+    protected Label expenseLabel;
+    @FXML
+    protected Label totalLabel;
+    @FXML
     protected Button addButton;
     @FXML
     protected Button editButton;
     @FXML
     protected Button backButton;
+    @FXML
+    protected Button calButton;
     @FXML
     protected TextField dateField;
     @FXML
@@ -46,6 +54,9 @@ public class FirstPageController {
         nameLabel.setText(account.getName());
         dateField.setText(String.valueOf(LocalDate.now()));
         displayTable();
+        totalLabel.setText(String.valueOf(account.getTotal()));
+        incomeLabel.setText(String.valueOf(account.getIncome()));
+        expenseLabel.setText(String.valueOf(account.getExpense()));
     }
 
     @FXML
@@ -62,8 +73,11 @@ public class FirstPageController {
         String content = currentTransaction.formatContent();
         if (Main.filename.contains(".txt"))
             writeFile(content, Main.filename);
-        if (Main.filename.contains(".db"))
+        else if (Main.filename.contains(".db"))
             writeDatabase(currentTransaction);
+        totalLabel.setText(String.valueOf(account.getTotal()));
+        incomeLabel.setText(String.valueOf(account.getIncome()));
+        expenseLabel.setText(String.valueOf(account.getExpense()));
 
     }
 
@@ -97,6 +111,13 @@ public class FirstPageController {
         }
 
     }
+
+//    @FXML
+//    void showTotalIncomeExpense(ActionEvent event) {
+//        totalLabel.setText(String.valueOf(account.getTotal()));
+//        incomeLabel.setText(String.valueOf(account.getIncome()));
+//        expenseLabel.setText(String.valueOf(account.getExpense()));
+//    }
 
     public static Transaction getSelectedTransaction() {
         return selectedTransaction;

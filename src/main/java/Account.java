@@ -125,4 +125,23 @@ public class Account {
         }
     }
 
+    public double getIncome() {
+        double income = 0;
+        for (Transaction ts :
+                transactions) {
+            if (ts.getType().equals("deposit"))
+                income += ts.getAmount();
+        }
+        return income;
+    }
+    public double getExpense() {
+        double expense = 0;
+        for (Transaction ts :
+                transactions) {
+            if (ts.getType().equals("expense"))
+                expense += ts.getAmount();
+        }
+        return expense;
+    }
+
 }
